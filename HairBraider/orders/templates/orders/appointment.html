@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<form method="post" id="appointmentForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% comment %} <div>
+        <label>{{ form.date.label }}</label>
+        {{ form.date }}
+    </div>
+    <div>
+        <label>{{ form.time.label }}</label>
+        {{ form.time }}
+    </div> {% endcomment %}
+    <button type="submit">Записаться</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Добавьте отладку в JS (appointment.html):
+$("#id_date").change(function() {
+  console.log("Дата изменена, ID:", $(this).val()); // Проверьте, что событие срабатывает
+  $.ajax({
+    url: "{% url 'order:ajax_load_times' %}",
+    data: { 'date': $(this).val() },
+    success: function(data) {
+      console.log("Ответ сервера:", data); // Должны увидеть HTML
+      $("#id_time").html(data);
+    },
+    error: function(xhr) {
+      console.error("Ошибка AJAX:", xhr.responseText);
+    }
+  });
+});
+</script>
+
+{% endblock content %}

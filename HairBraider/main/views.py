@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .models import Products
 
@@ -48,8 +48,8 @@ class ProductView(DetailView):
 
 
     def get_object(self, queryset=None):
-        product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
-        return product
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        return get_object_or_404(Products, slug=slug) 
     
 
     def get_context_data(self, **kwargs):

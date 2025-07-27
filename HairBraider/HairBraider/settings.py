@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     'main',
     'users',
-    'booking',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +141,7 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGIN_REDIRECT_URL = 'main:index'  # URL по умолчанию после входа
 LOGOUT_REDIRECT_URL = 'main:index'  # URL после выхода
+
+
+DATE_INPUT_FORMATS = ['%d.%m.%Y', '%Y-%m-%d']
+TIME_INPUT_FORMATS = ['%H:%M', '%I:%M %p']

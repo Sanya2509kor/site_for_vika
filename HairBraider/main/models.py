@@ -12,7 +12,7 @@ class Products(models.Model):
     image = models.ImageField(upload_to='product_images', blank=True, null=True, verbose_name='Изображение')
     description = models.TextField(verbose_name='Текст', blank=True, null=True)
     price = models.DecimalField(max_digits=7, decimal_places=0, verbose_name='Цена')
-    discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=0, verbose_name='Скидка в %')
+    discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
     color = models.CharField(max_length=30, verbose_name="Цвет детали", blank=True, null=True)
     show = models.BooleanField(verbose_name='Показать на сайте?', default=True)
     
@@ -20,9 +20,9 @@ class Products(models.Model):
 
 
     class Meta:
-        db_table = 'Product'
-        verbose_name = 'Продукт'
-        verbose_name_plural = 'Продукты'
+        db_table = 'Services'
+        verbose_name = 'Услугу'
+        verbose_name_plural = 'Услуги'
         ordering = ("name",)
 
     def __str__(self):
