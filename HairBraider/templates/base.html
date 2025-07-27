@@ -1,0 +1,154 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href={% static "deps/css/bootstrap/bootstrap.min.css" %}>
+    <link rel="stylesheet" href={% static "deps/css/my_css.css" %}>
+    <link rel="stylesheet" href={% static "deps/css/my_footer_css.css" %}>
+    <link rel="manifest" href={% static "deps/favicon/site.webmanifest" %}> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    {% block title %}
+    {% endblock title %}
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href=" {% url "main:index" %} ">
+                <i class="fas fa-spa me-2"></i>HairBraider
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "main:index" %}">Услуги</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#portfolio">Портфолио</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "main:about" %}">О нас</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "main:reviews" %}">Отзывы</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Контакты</a>
+                    </li>
+                </ul>
+                <a href="{% url "booking:booking" %}" class="btn btn-primary ms-lg-3">Записаться</a>
+                {% if not user.is_authenticated %}
+                    <a href="{% url "user:login" %}" class="btn btn-primary ms-lg-3">Войти</a>
+                {% else %}
+                    <a href="{% url "user:profile" %}" class="btn btn-primary ms-lg-3">Мой профиль</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </nav>
+    {% include "includes/notifications.html" %}
+
+
+    {% block content %}{% endblock content %}
+
+
+    <!-- Запись -->
+    {% comment %} <section id="booking" class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="booking-form">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Записаться онлайн</h2>
+                            <p class="text-muted">Заполните форму, и мы свяжемся с вами для подтверждения записи</p>
+                        </div>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Ваше имя</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Телефон</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="service" class="form-label">Услуга</label>
+                                    <select class="form-select" id="service" name="service">
+                                        <option selected>Выберите услугу</option>
+                                        <option value="Африканские косички">Африканские косички</option>
+                                        <option value="Боксерские косы">Боксерские косы</option>
+                                        <option value="Греческая прическа">Греческая прическа</option>
+                                        <option value="Дреды">Дреды</option>
+                                        <option value="Косы с канекалоном">Косы с канекалоном</option>
+                                        <option value="Детские прически">Детские прически</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="date" class="form-label">Дата</label>
+                                    <input type="date" class="form-control" id="date" name="date" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="message" class="form-label">Дополнительная информация</label>
+                                    <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg">Отправить заявку</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+
+    <!-- Контакты -->
+    {% comment %} <section id="contact" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h3 class="fw-bold mb-4">Контакты</h3>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-map-marker-alt text-primary me-3"></i>
+                        <span>г. Москва, ул. Примерная, д. 123</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-phone-alt text-primary me-3"></i>
+                        <span>+7 (999) 123-45-67</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-envelope text-primary me-3"></i>
+                        <span>info@luxbraids.ru</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-clock text-primary me-3"></i>
+                        <span>Ежедневно с 10:00 до 20:00</span>
+                    </div>
+                </div>
+                
+                <div class="col-lg-8">
+                    <div class="ratio ratio-16x9">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1456.0570527003288!2d93.33918250807201!3d56.121957870175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5cd79dc91d51a32f%3A0x32c8c73936d137ae!2z0YPQuy4g0JvQtdC90LjQvdGB0LrQvtCz0L4g0JrQvtC80YHQvtC80L7Qu9CwLCA3LCDQodC-0YHQvdC-0LLQvtCx0L7RgNGB0LosINCa0YDQsNGB0L3QvtGP0YDRgdC60LjQuSDQutGA0LDQuSwgNjYyNTAw!5e0!3m2!1sru!2sru!4v1753279285972!5m2!1sru!2sru" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                    </div>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+
+    <!-- Bootstrap JS и зависимости -->
+    <script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script>
+    <script src={% static "deps/js/jquery-events.js" %}></script>
+    <script src={% static "deps/js/product_gallery.js" %}></script>
+    <script src={% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}></script>
+</body>
+</html>
