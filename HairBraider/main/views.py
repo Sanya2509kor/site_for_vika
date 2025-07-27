@@ -56,5 +56,6 @@ class ProductView(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
         context['images'] = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg)).images.all()
+        context['first_name'] = self.request.GET.get('first_name')
         # context['related_products'] = self.object.related_products.all()[:6]  # Ограничиваем до 6 товаров
         return context

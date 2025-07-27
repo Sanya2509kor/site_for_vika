@@ -46,6 +46,7 @@ class ProfileForm(UserChangeForm):
             "image",
             "first_name",
             "username",
+            "phone_number",
             "email",
         )
     image = forms.ImageField(required=False)

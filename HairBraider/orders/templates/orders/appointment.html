@@ -2,19 +2,82 @@
 {% load static %}
 
 {% block content %}
-<form method="post" id="appointmentForm">
-    {% csrf_token %}
-    {{ form.as_p }}
-    {% comment %} <div>
-        <label>{{ form.date.label }}</label>
-        {{ form.date }}
+<link rel="stylesheet" href={% static "deps/css/my_css_forma_appoint.css" %}>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="appointment-form">
+                <h2 class="form-header">Запись на прием</h2>
+                <form method="post" id="appointmentForm">
+                    {% csrf_token %}
+                    
+                    <!-- Поле для выбора даты -->
+                    <div class="mb-3">
+                        <label for="id_date" class="form-label">Дата</label>
+                        {{ form.date }}
+                        {% if form.date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.date.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для выбора времени -->
+                    <div class="mb-3">
+                        <label for="id_time" class="form-label">Время</label>
+                        {{ form.time }}
+                        {% if form.time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.time.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для имени -->
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Ваше имя</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для телефона -->
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label">Телефон</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для продукта -->
+                    <div class="mb-4">
+                        <label for="id_product" class="form-label">Услуга/Продукт</label>
+                        {{ form.product }}
+                        {% if form.product.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.product.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Поле комментария -->
+                    <div class="mb-4">
+                        <label for="id_comment" class="form-label">Комментарий</label>
+                        {{ form.comment }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-submit">Записаться</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <div>
-        <label>{{ form.time.label }}</label>
-        {{ form.time }}
-    </div> {% endcomment %}
-    <button type="submit">Записаться</button>
-</form>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -34,5 +97,4 @@ $("#id_date").change(function() {
   });
 });
 </script>
-
 {% endblock content %}

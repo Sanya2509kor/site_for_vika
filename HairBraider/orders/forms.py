@@ -12,14 +12,14 @@ class AppointmentForm(forms.ModelForm):
                     freely=True
                 )
             )
-        ).filter(has_available_times=True),
+        ).filter(has_available_times=True).order_by('date'),
         empty_label="---------",
         to_field_name="id"  # Убедитесь, что используется правильное поле
     )
     
     class Meta:
         model = Appointment
-        fields = ['date', 'time', 'name', 'phone', 'product']
+        fields = ['date', 'time', 'name', 'phone', 'product', 'comment']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

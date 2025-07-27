@@ -5,6 +5,7 @@ from .models import AvailableDate, AvailableTime, Appointment
 from django.views.generic import CreateView
 from django.db import transaction
 from django.contrib import messages
+from users.models import User
 
 
 class AppointmentView(CreateView):
@@ -12,6 +13,25 @@ class AppointmentView(CreateView):
     form_class = AppointmentForm
     template_name = 'orders/appointment.html'
     success_url = reverse_lazy('main:index')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        product_id = self.request.GET.get('product_id')
+        if product_id:
+            initial['product'] = product_id  # Устанавливаем начальное значение
+        
+        if self.request.user.is_authenticated:
+            initial['name'] = self.request.user.get_full_name()  # или user.first_name
+
+        if hasattr(self.request.user, 'phone_number') and self.request.user.phone_number:
+            initial['phone'] = self.request.user.phone_number
+        return initial
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Запись'
+        return context
 
 
     def form_valid(self, form):
@@ -32,6 +52,23 @@ class AppointmentView(CreateView):
                 self.object = form.save(commit=False)
                 self.object.time = locked_time_slot
                 self.object.save()
+
+                # Если пользователь авторизован
+                if self.request.user.is_authenticated:
+                    # Связываем запись с пользователем
+                    self.object.user = self.request.user
+                
+                    # Получаем номер телефона из формы
+                    phone_number = form.cleaned_data.get('phone')
+                
+                    # Если номер телефона был указан и отличается от текущего
+                    if (phone_number and 
+                        hasattr(self.request.user, 'phone_number') and 
+                        self.request.user.phone_number != phone_number):
+                    
+                        # Обновляем номер телефона пользователя
+                        self.request.user.phone_number = phone_number
+                        self.request.user.save()
                 
                 # Обновляем статус времени
                 locked_time_slot.freely = False
@@ -87,7 +124,7 @@ class AppointmentView(CreateView):
 
 def load_times(request):
     date_id = request.GET.get('date')
-    times = AvailableTime.objects.filter(date_id=date_id, freely=True)
+    times = AvailableTime.objects.filter(date_id=date_id, freely=True).order_by('time')
     return render(request, 'orders/times_dropdown_list_options.html', {'times': times})
 
 # def success_view(request):
