@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .models import Products
+from users.models import User
 
 
 class IndexView(TemplateView):
@@ -30,13 +31,8 @@ class AboutView(TemplateView):
         return context
 
 
-class ReviewsView(TemplateView):
-    template_name = 'main/reviews.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
 
-        return context
     
 
 class ProductView(DetailView):

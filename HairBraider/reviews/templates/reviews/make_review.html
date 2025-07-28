@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block content %}
+
+<link rel="stylesheet" href={% static "deps/css/my_css_forma_appoint.css" %}>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="appointment-form">
+                <h2 class="form-header">Будем рады 5 звёздочкам</h2>
+                <form method="post" id="appointmentForm">
+                        {% csrf_token %}
+                    <!-- Поле комментария -->
+                    <div class="mb-4">
+                        <label for="id_comment" class="form-label">Комментарий</label>
+                        {{ form.comment }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-submit">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

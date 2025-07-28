@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .forms import AppointmentForm
-from .models import AvailableDate, AvailableTime, Appointment
+from .models import AvailableTime, Appointment
 from django.views.generic import CreateView
 from django.db import transaction
 from django.contrib import messages
-from users.models import User
 
 
 class AppointmentView(CreateView):
@@ -88,38 +87,6 @@ class AppointmentView(CreateView):
         messages.error(self.request, 'Пожалуйста, исправьте ошибки в форме')
         return super().form_invalid(form)
     
-
-# def appointment_view(request):
-#     form = AppointmentForm(request.POST or None)
-    
-#     if request.method == 'POST' and form.is_valid():
-#         try:
-#             # 1. Сохраняем запись о бронировании (пока без коммита)
-#             appointment = form.save(commit=False)
-            
-#             # 2. Получаем выбранные дату и время
-#             selected_date = form.cleaned_data['date']
-#             selected_time_obj = form.cleaned_data['time']  # Это объект AvailableTime
-            
-#             # 3. Проверяем доступность времени
-#             if not selected_time_obj.freely:
-#                 form.add_error('time', 'Это время уже занято')
-#             else:
-#                 # 4. Обновляем статус времени
-#                 selected_time_obj.freely = False
-#                 selected_time_obj.save()
-                
-#                 # 5. Связываем время с записью
-#                 appointment.time = selected_time_obj
-#                 appointment.save()
-                
-#                 return redirect('main:index')
-                
-#         except Exception as e:
-#             form.add_error(None, f'Произошла ошибка: {str(e)}')
-    
-#     return render(request, 'orders/appointment.html', {'form': form})
-
 
 
 def load_times(request):

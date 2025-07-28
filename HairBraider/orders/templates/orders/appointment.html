@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="appointment-form">
-                <h2 class="form-header">Запись на прием</h2>
+                <h2 class="form-header">Запишитесь на свободную дату</h2>
                 <form method="post" id="appointmentForm">
                     {% csrf_token %}
                     
@@ -79,7 +79,7 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script>
 <script>
     // Добавьте отладку в JS (appointment.html):
 $("#id_date").change(function() {

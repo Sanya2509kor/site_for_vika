@@ -16,6 +16,15 @@ class AppointmentForm(forms.ModelForm):
         empty_label="---------",
         to_field_name="id"  # Убедитесь, что используется правильное поле
     )
+
+    comment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'placeholder': 'Можете написать свои пожелания',
+            'class': 'form-control'  # можно добавить классы для стилизации
+        }),
+        required=False,  # если поле необязательное
+        label='Комментарий'
+    )
     
     class Meta:
         model = Appointment
