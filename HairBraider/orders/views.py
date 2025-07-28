@@ -1,10 +1,13 @@
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .forms import AppointmentForm
 from .models import AvailableTime, Appointment
-from django.views.generic import CreateView
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import CreateView, ListView
 from django.db import transaction
 from django.contrib import messages
+from django.utils import timezone
 
 
 class AppointmentView(CreateView):
@@ -88,11 +91,89 @@ class AppointmentView(CreateView):
         return super().form_invalid(form)
     
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+
 
 def load_times(request):
     date_id = request.GET.get('date')
     times = AvailableTime.objects.filter(date_id=date_id, freely=True).order_by('time')
     return render(request, 'orders/times_dropdown_list_options.html', {'times': times})
 
-# def success_view(request):
-#     return render(request, 'orders/success.html')
+
+class ListOrdersView(UserPassesTestMixin,  ListView):
+    model = Appointment
+    context_object_name = 'orders'
+    template_name = 'orders/list_orders.html'
+    paginate_by = 10  # Пагинация по 10 элементов
+    raise_exception = True  # Возвращает 403 вместо 404
+    # или
+    permission_denied_message = "Доступ запрещен"  # Сообщение при отказе
+
+    def test_func(self):
+        """Проверка, что пользователь администратор"""
+        return self.request.user.is_authenticated and self.request.user.is_staff
+
+    def handle_no_permission(self):
+        """Обработка случая, когда пользователь не админ"""
+        raise Http404("Страница не найдена")  # Возвращаем 404
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['today'] = timezone.now().date()
+        context['title'] = 'HairBraider'
+        
+        return context
+    
+    
+    def get_queryset(self):
+        # Базовый QuerySet с оптимизацией
+        today = timezone.now().date()
+        queryset = super().get_queryset().filter(date__date__gt=today)\
+            .select_related('product', 'date', 'time')\
+            .order_by('date__date', 'time__time')
+        
+        return queryset
+    
+
+
+class ListOrdersTodayView(UserPassesTestMixin, ListView):
+    model = Appointment
+    context_object_name = 'orders'
+    template_name = 'orders/list_orders_today.html'
+    paginate_by = 10  # Пагинация по 10 элементов
+    raise_exception = True  # Возвращает 403 вместо 404
+
+    permission_denied_message = "Доступ запрещен"  # Сообщение при отказе
+
+    def test_func(self):
+        """Проверка, что пользователь администратор"""
+        return self.request.user.is_authenticated and self.request.user.is_staff
+
+    def handle_no_permission(self):
+        """Обработка случая, когда пользователь не админ"""
+        raise Http404("Страница не найдена")  # Возвращаем 404
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['today'] = timezone.now().date()
+        context['title'] = 'HairBraider'
+        
+        return context
+    
+
+    def get_queryset(self):
+        # Базовый QuerySet с оптимизацией
+        today = timezone.now().date()
+        queryset = super().get_queryset().filter(date__date=today)\
+            .select_related('product', 'date', 'time')\
+            .order_by('time__time')
+        
+        return queryset

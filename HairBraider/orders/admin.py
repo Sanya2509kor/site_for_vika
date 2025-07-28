@@ -18,6 +18,7 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_display = ('date', 'time', 'name', 'phone', 'created_at')
     list_filter = ('date',)
     fields = [
+        'user',
         'name',
         'phone',
         'date',

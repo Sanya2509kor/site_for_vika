@@ -9,12 +9,36 @@
         <div class="text-center mb-5">
             <h2 class="fw-bold">Отзывы наших клиентов</h2>
             <p class="text-muted">Что говорят о нас довольные клиенты</p>
-            <a class="btn btn-primary ms-lg-3" href="{% url "reviews:add_review" %}">Оставить отзыв</a>
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary ms-lg-3" href="{% url 'reviews:add_review' %}">Оставить отзыв</a>
+            {% else %}
+                <button class="btn btn-primary ms-lg-3" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#loginModal">
+                    Оставить отзыв
+                </button>
+                
+                <!-- Модальное окно входа -->
+                <div class="modal fade" id="loginModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Требуется вход</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Чтобы оставить отзыв, пожалуйста, войдите в систему.</p>
+                                <a href="{% url 'user:login' %}?next={{ request.path }}" class="btn btn-primary">Войти</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         
-        <div class="row">
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
             {% for review in reviews %}
-                <div class="col-md-4">
+                <div class="col text-center">
                     <div class="testimonial-card">
                         <div class="d-flex align-items-center mb-3">
                             {% if review.user.image %}
@@ -64,7 +88,7 @@
                                 <h5 class="modal-title">Отзыв от {{ review.user.username }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body text-center">
                                 {{ review.comment }}
                             </div>
                             <div class="modal-footer">

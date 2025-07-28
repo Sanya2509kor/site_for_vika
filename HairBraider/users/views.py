@@ -1,17 +1,14 @@
-from email import message
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.db.models import Prefetch
-
-# from carts.models import Cart
-# from orders.models import Order, OrderItem
 from .forms import ProfileForm, UserLoginForm, UserRegistrationForm
+from orders.models import Appointment
+from django.utils import timezone
 
 
 class UserLoginView(LoginView):
@@ -45,6 +42,7 @@ class UserLoginView(LoginView):
             messages.success(self.request, f"{user.username}, Вы вошли в аккаунт!")
 
             return HttpResponseRedirect(self.get_success_url())
+        
     
 
 
@@ -97,6 +95,13 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Личный кабинет'
+        if self.request.user.is_authenticated:
+            user_app = Appointment.objects.filter(user=self.request.user)
+            today = timezone.now().date()
+            context['current_app'] = user_app.filter(date__date=today)
+            context['past_app'] = user_app.filter(date__date__lt=today)
+            context['future_app'] = user_app.filter(date__date__gt=today)
+
         # context['orders'] = Order.objects.filter(user=self.request.user).prefetch_related(
                 # Prefetch(
                     # "orderitem_set",
