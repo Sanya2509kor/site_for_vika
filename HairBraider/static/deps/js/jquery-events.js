@@ -44,4 +44,39 @@ $(document).ready(function () {
         new ProductGallery(images);
     }
 
+
+
+    
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.images img');
+    let currentIndex = 0;
+    
+    function updateImage() {
+        images.forEach((img, index) => {
+            img.style.display = index === currentIndex ? 'block' : 'none';
+        });
+        
+        const currentImageSpan = document.querySelector('.current-image');
+        currentImageSpan.textContent = (currentIndex + 1) + ' / ' + images.length;
+    }
+    
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+    
+    prevButton.addEventListener('click', function() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateImage();
+    });
+    
+    nextButton.addEventListener('click', function() {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateImage();
+    });
+    
+    updateImage();
+});
+
+
 });

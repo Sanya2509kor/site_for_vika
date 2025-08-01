@@ -1,18 +1,22 @@
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from .models import Products
 from users.models import User
 
 
-class IndexView(TemplateView):
+class IndexView(ListView):
     template_name = 'main/index.html'
+    model = 'Products'
+    context_object_name = 'goods'
+    paginate_by = 10
+    allow_empty = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'HairBraider'
         context['title_text'] = 'Наши услуги'
         context['text'] = 'Выберите стиль, который подчеркнет вашу индивидуальность'
-        context['goods'] = Products.objects.all()
+        # context['goods'] = Products.objects.all()
         return context
     
 
@@ -21,18 +25,6 @@ class IndexView(TemplateView):
         goods = Products.objects.all()
         return goods
     
-
-class AboutView(TemplateView):
-    template_name = 'main/about.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        return context
-
-
-
-
     
 
 class ProductView(DetailView):

@@ -31,20 +31,9 @@ class Products(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(
-        Products, 
-        on_delete=models.CASCADE,
-        related_name='images',
-        verbose_name='Товар'
-    )
-    image = models.ImageField(
-        upload_to='product_images/',
-        verbose_name='Изображение'
-    )
-    is_main = models.BooleanField(
-        default=False,
-        verbose_name='Основное изображение'
-    )
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='images', verbose_name='Товар')
+    image = models.ImageField(upload_to='product_images/', verbose_name='Изображение')
+    is_main = models.BooleanField(default=False, verbose_name='Основное изображение')
     
     class Meta:
         verbose_name = 'Изображение товара'

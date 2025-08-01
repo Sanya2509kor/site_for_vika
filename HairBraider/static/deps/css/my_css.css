@@ -55,7 +55,7 @@ body {
     transition: transform 0.3s;
     margin-bottom: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    background-color: #0FFF2A;
+    background-color: #cce6cf;
 }
 
 .service-card:hover {

@@ -32,16 +32,16 @@
                         <a class="nav-link" href="{% url "main:index" %}">Услуги</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#portfolio">Портфолио</a>
+                        <a class="nav-link" href="{% url "about:portfolio" %}">Портфолио</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "main:about" %}">О нас</a>
+                        <a class="nav-link" href="{% url "about:about" %}">О нас</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "reviews:reviews" %}">Отзывы</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Контакты</a>
+                        <a class="nav-link" href="{% url "about:contacts" %}">Контакты</a>
                     </li>
                 </ul>
                 <a href="{% url "order:appointment" %}" class="btn btn-primary ms-lg-3">Записаться</a>

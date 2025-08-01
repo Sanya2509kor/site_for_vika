@@ -108,7 +108,7 @@ class ListOrdersView(UserPassesTestMixin,  ListView):
     model = Appointment
     context_object_name = 'orders'
     template_name = 'orders/list_orders.html'
-    paginate_by = 10  # Пагинация по 10 элементов
+    paginate_by = 3  # Пагинация по 10 элементов
     raise_exception = True  # Возвращает 403 вместо 404
     # или
     permission_denied_message = "Доступ запрещен"  # Сообщение при отказе
