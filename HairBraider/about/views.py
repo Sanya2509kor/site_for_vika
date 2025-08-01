@@ -9,6 +9,14 @@ class AboutView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Обо мне'
+        context['description'] = 'Я - профессиональный мастер по плетению кос с многолетним опытом работы. Моя миссия - создавать красивые и стильные прически, которые подчеркивают индивидуальность каждого клиента. ' \
+                                'Использую только качественные материалы и современные техники плетения. Я постоянно совершенствую свои навыки и слежу за последними тенденциями в мире причесок.'
+        
+        gal = []
+        gal.append('Более 2 лет опыта')
+        gal.append('Гипоаллергенные материалы')
+        gal.append('Индивидуальный подход к каждому клиенту')
+        context['gal'] = gal
         return context
 
 
@@ -37,5 +45,8 @@ class ContactsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Контакты'
+        context['adress'] = 'Сосновоборск, Мира 3'
+        context['phone'] = '+7 (999) 123-45-67'
+        context['mail'] = 'vikkkk@yandex.ru'
         return context
     

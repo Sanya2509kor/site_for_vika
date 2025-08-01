@@ -18,7 +18,6 @@ class ProductsAdmin(admin.ModelAdmin):
     fields = [
         "name", 
         "description",
-        "image",
     ]
 
     ordering = ('-id',)

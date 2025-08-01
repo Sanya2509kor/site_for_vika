@@ -15,7 +15,7 @@
         
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
             {% for object in objects %}
-                {% if object.image %}
+                {% comment %} {% if object.image %} {% endcomment %}
                         <div class="col">
                             <div class="service-card">
                                 <div class="carousel">
@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                         </div>
-                {% endif %}
+                {% comment %} {% endif %} {% endcomment %}
             {% endfor %}
         </div>
     {% include "pagination.html" %}

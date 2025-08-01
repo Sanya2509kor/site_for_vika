@@ -255,6 +255,14 @@ body {
     display: inline-block; /* Чтобы padding работал правильно */
 }
 
+.registration-form {
+    background-color: #ec7732;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(226, 138, 138, 0.1);
+    padding: 30px;
+    margin-top: 30px;
+}
+
 @media (max-width: 768px) {
     .hero-section {
         padding: 60px 0;

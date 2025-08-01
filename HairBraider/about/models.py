@@ -5,7 +5,7 @@ class Portfolio(models.Model):
 
     name = models.CharField(verbose_name='Название', blank=False, null=False)
     description = models.TextField(verbose_name='Описание', blank=True, null=True, )
-    image = models.ImageField(upload_to='portfolio_images', blank=True, null=True, verbose_name='Изображение')
+    # image = models.ImageField(upload_to='portfolio_images', blank=True, null=True, verbose_name='Изображение')
 
 
 
