@@ -7,6 +7,21 @@
 
 {% block content %}
 <section id="services" class="py-5">
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid" alt="Full size image">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="container">
         <div class="text-center mb-5">
             {% comment %} <h2 class="fw-bold"> {{ title_text }} </h2>
@@ -21,7 +36,12 @@
                                 <div class="carousel">
                                     <div class="images">
                                         {% for image in object.images.all %}
-                                            <img src="{{ image.image.url }}" alt="{{ object.name }}">
+                                            <img src="{{ image.image.url }}" 
+                                            alt="{{ object.name }}"
+                                            class="clickable-image"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#imageModal"
+                                            data-fullsize="{{ image.image.url }}">
                                         {% endfor %}
                                     </div>
                                     <!-- Добавлен отдельный счетчик для мобильных -->
@@ -259,6 +279,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Инициализация
         updateCounter();
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик клика по изображениям
+    document.querySelectorAll('.clickable-image').forEach(img => {
+        img.addEventListener('click', function() {
+            document.getElementById('modalImage').src = this.dataset.fullsize;
+            document.getElementById('modalImage').alt = this.alt;
+        });
     });
 });
 </script>

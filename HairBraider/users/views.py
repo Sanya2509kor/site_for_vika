@@ -29,7 +29,7 @@ class UserLoginView(LoginView):
         return reverse_lazy('main:index')
     
     def form_valid(self, form):
-        session_key = self.request.session.session_key
+        # session_key = self.request.session.session_key
         user = form.get_user()
 
         if user:
@@ -42,6 +42,12 @@ class UserLoginView(LoginView):
             messages.success(self.request, f"{user.username}, Вы вошли в аккаунт!")
 
             return HttpResponseRedirect(self.get_success_url())
+        
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Неверный номер телефона или пароль")
+        return super().form_invalid(form)    
+    
         
     
 
@@ -59,9 +65,9 @@ class UserRegistrationView(CreateView):
         return context
     
     def form_valid(self, form):
-        session_key = self.request.session.session_key
+        # session_key = self.request.session.session_key
         user = form.instance
-
+        
         if user:
             form.save()
             auth.login(self.request, user)

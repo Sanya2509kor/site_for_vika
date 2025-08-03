@@ -106,9 +106,13 @@
                             <label for="id_username" class="form-label">Номер телефона*</label>
                             <input type="text" class="form-control" id="id_username"
                                 name="phone_number"
-                                placeholder="Введите ваш номер телефона" 
+                                {% comment %} placeholder="{{form.phone_number.value}}"  {% endcomment %}
                                 value="{{form.phone_number.value}}" 
-                                required>
+                                readonly
+                                style="background-color: #f8f9fa; cursor: not-allowed;">
+                                <small class="form-text text-muted">
+                                    Номер телефона нельзя изменить после регистрации. Для изменения обратитесь в поддержку.
+                                </small>
                                 {% if form.phone_number.errors %}
                                     <div class="alert alert-danger alert-dismissible fade show">{{ form.phone_number.errors }}</div>
                                 {% endif %}
@@ -120,7 +124,10 @@
                                 name="email"
                                 placeholder="Введите ваш email *youremail@example.com" 
                                 value="{{form.email.value}}"
-                                required>
+                                >
+                                <small class="form-text text-muted">
+                                    Для рассылки акций и предложений
+                                </small>
                                 {% if form.email.errors %}
                                     <div class="alert alert-danger alert-dismissible fade show">{{ form.email.errors }}</div>
                                 {% endif %}
