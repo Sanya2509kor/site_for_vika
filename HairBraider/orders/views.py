@@ -8,13 +8,18 @@ from django.views.generic import CreateView, ListView
 from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class AppointmentView(CreateView):
+class AppointmentView(LoginRequiredMixin, CreateView):
     model = Appointment
     form_class = AppointmentForm
     template_name = 'orders/appointment.html'
     success_url = reverse_lazy('main:index')
+
+    def handle_no_permission(self):
+        messages.warning(self.request, 'Для записи войдите в аккаунт или зарегистрируйтесь!!!')
+        return super().handle_no_permission()
 
     def get_initial(self):
         initial = super().get_initial()

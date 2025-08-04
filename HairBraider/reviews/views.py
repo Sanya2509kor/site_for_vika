@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
@@ -77,6 +79,20 @@ class EditReviewView(UpdateView):
     form_class = ReviewForm
     success_url = reverse_lazy('reviews:my_reviews')
     template_name = 'reviews/edit_review.html'
+
+
+    def dispatch(self, request, *args, **kwargs):
+        review = self.get_object()
+
+        time_passed = timezone.now() - review.created_at
+        if time_passed > timedelta(hours=24):
+            raise Http404
+        
+
+        if review.user != request.user:
+            raise Http404
+            
+        return super().dispatch(request, *args, **kwargs)
     
 
     def get_context_data(self, **kwargs):
@@ -88,5 +104,9 @@ class EditReviewView(UpdateView):
 
     def form_valid(self, form):
         if form.instance.user != self.request.user:
-            return self.form_invalid()
+            raise Http404
         return super().form_valid(form)
+    
+
+        
+    

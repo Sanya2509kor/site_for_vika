@@ -148,3 +148,5 @@ LOGOUT_REDIRECT_URL = 'main:index'  # URL после выхода
 
 DATE_INPUT_FORMATS = ['%d.%m.%Y', '%Y-%m-%d']
 TIME_INPUT_FORMATS = ['%H:%M', '%I:%M %p']
+
+TELEGRAM_BOT_TOKEN = '8098005907:AAFPpRMQ1PJ5EZmgq-yLLdope0hvEULwKv8'

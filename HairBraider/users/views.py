@@ -49,9 +49,6 @@ class UserLoginView(LoginView):
         return super().form_invalid(form)    
     
         
-    
-
-
 
 class UserRegistrationView(CreateView):
     template_name = 'users/registration.html'
@@ -78,7 +75,6 @@ class UserRegistrationView(CreateView):
         messages.success(self.request, f"{user.username}, Вы успешно зарегистрированы и вошли в аккаунт")
         return HttpResponseRedirect(self.success_url)
     
-
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
@@ -115,21 +111,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
                 # )
             # ).order_by("-id")
         return context
-
-
-
-# class UserCartView(TemplateView):
-#     template_name = 'users/users_cart.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Корзина'
-#         return context
-
-# def users_cart(request):
-#     return render(request, 'users/users_cart.html')
-
-
+    
 
 @login_required
 def logout(request):
