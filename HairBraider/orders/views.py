@@ -33,6 +33,12 @@ class AppointmentView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Запись'
+        make_appoint = True
+        if self.request.user.is_authenticated:
+            if Appointment.objects.filter(user=self.request.user, date__date__gte=timezone.now().date()).count() >= 3:
+                messages.warning(self.request, 'У вас уже есть 3 записи, вы пока не можете записаться!!!')
+                make_appoint = False
+        context['make_appoint'] = make_appoint
         return context
 
 
@@ -59,6 +65,10 @@ class AppointmentView(CreateView):
                 if self.request.user.is_authenticated:
                     # Связываем запись с пользователем
                     self.object.user = self.request.user
+
+                    user = self.request.user
+                    user.count_comments += 1
+                    user.save()
                 
                     # Получаем номер телефона из формы
                     phone_number = form.cleaned_data.get('phone')

@@ -31,7 +31,7 @@ class AvailableTime(models.Model):
 
 
 class Appointment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь',null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь',null=True, blank=True, related_name='appointment')
     name = models.CharField('Имя', max_length=100)
     phone = models.CharField('Телефон', max_length=20)
     product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name='Услуга')

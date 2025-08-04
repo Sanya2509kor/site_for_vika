@@ -4,6 +4,8 @@ from django.views.generic import TemplateView, CreateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from reviews.models import Reviews
 from reviews.forms import ReviewForm
+from users.models import User
+from django.utils import timezone
 
 
 class ReviewsView(ListView):
@@ -15,7 +17,13 @@ class ReviewsView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title'] = 'Отзывы'
+        if self.request.user.is_authenticated:
+            context['user_has_comment'] = self.request.user.count_comments
+        else:
+            context['user_has_comment'] = False
         return context
+    
     
     def get_queryset(self):
         objects = Reviews.objects.all()
@@ -25,9 +33,39 @@ class ReviewsView(ListView):
 class CreateReviewView(LoginRequiredMixin, CreateView):
     model = Reviews
     form_class = ReviewForm
-    success_url = reverse_lazy('user:profile')
+    success_url = reverse_lazy('reviews:my_reviews')
     template_name = 'reviews/make_review.html'
     
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Создание отзыва'
+        return context
+    
+
     def form_valid(self, form):
         form.instance.user = self.request.user
+        user = self.request.user
+        user.count_comments -= 1
+        user.save()
         return super().form_valid(form)
+
+
+class MyReviewsView(ListView):
+    template_name = 'reviews/my_reviews.html'
+    context_object_name = 'my_reviews'
+    model = 'Reviews'
+    paginate_by = 10
+    allow_empty = True
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Мои отзывы'
+
+        return context
+    
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Reviews.objects.none()  # Возвращаем пустой queryset для анонимных пользователей
+        return Reviews.objects.filter(user=self.request.user)

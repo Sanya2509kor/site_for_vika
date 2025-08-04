@@ -18,8 +18,9 @@ class User(AbstractUser):
         },
     )
 
-    first_name = models.CharField(verbose_name='name', max_length=150)
+    first_name = models.CharField(verbose_name='Имя', max_length=150)
     email = models.EmailField(blank=True, null=True)  # разрешаем пустое значение
+    count_comments = models.PositiveSmallIntegerField(verbose_name='Колличество комментариев может оставить', default=1, blank=True, null=True)
 
     USERNAME_FIELD = 'phone_number'  # Указываем, что phone_number теперь используется как идентификатор
     REQUIRED_FIELDS = ['first_name', 'username']  # Поля, запрашиваемые при создании суперпользователя

@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
 {% block content %}
     <div class="gallery-container">
-        <div class="main-image-container overflow: hidden"id="swipeContainer">
+        <div class="main-image-container"id="swipeContainer">
             <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image">
         </div>
         
         <div class="thumbnails" id="thumbnailsContainer">
             <!-- Основное изображение как первый элемент -->
-            <img src="{{ product.image.url }}" class="thumbnail {% if all_images|length == 1 %}active{% endif %}" 
+            <img src="{{ product.image.url }}" class="thumbnail {% if all_images|length == 1 %}active{% endif %} but-prod" 
                  onclick="changeImage(0)" alt="{{ product.name }}">
             
             <!-- Дополнительные изображения -->
             {% for image in product.images.all %}
-                <img src="{{ image.image.url }}" class="thumbnail" 
+                <img src="{{ image.image.url }}" class="thumbnail but-prod" 
                      onclick="changeImage({{ forloop.counter }})" alt="{{ image.description|default:product.name }}">
             {% endfor %}
         </div>
@@ -32,6 +36,7 @@
         </div>
     </div>
 </section>
+
 
 <script>
         // Собираем все URL изображений в массив

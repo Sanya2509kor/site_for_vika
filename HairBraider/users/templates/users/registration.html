@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% comment %} {% block modal_cart %}
-{% include "includes/cart_button.html" %}
-{% endblock %} {% endcomment %}
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
 
 {% block content %}
 {% comment %} <div class="row"> {% endcomment %}

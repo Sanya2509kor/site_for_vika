@@ -6,7 +6,7 @@ $(document).ready(function () {
     if (notification.length > 0) {
         setTimeout(function () {
             notification.alert('close');
-        }, 3000);
+        }, 5000);
     }
 
     // // Анимация при скролле
@@ -48,7 +48,7 @@ $(document).ready(function () {
 
     
 
-
+    // перелистывание изображений в index
     document.addEventListener('DOMContentLoaded', function() {
     const images = document.querySelectorAll('.images img');
     let currentIndex = 0;
