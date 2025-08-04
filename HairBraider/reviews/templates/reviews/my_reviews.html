@@ -30,6 +30,12 @@
                                     {% endfor %}
                         
                                 </div>
+                                
+                                {% if current_date < review.expiry_date  %}
+                                <a href="{% url 'reviews:edit_review' review.id %}" class="btn btn-primary">
+                                    Редактировать
+                                </a>
+                                {% endif %}
                             </div>
                         </div>
                         {# Ограничение длины комментария #}
@@ -43,6 +49,7 @@
                         {% else %}
                             <p class="mb-0">{{ review.comment }}</p>
                         {% endif %}
+                        <p class="mb-0">{{ review.created_at }}</p>
                     </div>
                 </div>
                 {# Модальное окно для полного текста #}

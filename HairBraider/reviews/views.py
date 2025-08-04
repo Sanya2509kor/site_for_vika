@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from reviews.models import Reviews
 from reviews.forms import ReviewForm
@@ -62,6 +62,7 @@ class MyReviewsView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Мои отзывы'
+        context['current_date'] = timezone.now()
 
         return context
     
@@ -69,3 +70,23 @@ class MyReviewsView(ListView):
         if not self.request.user.is_authenticated:
             return Reviews.objects.none()  # Возвращаем пустой queryset для анонимных пользователей
         return Reviews.objects.filter(user=self.request.user)
+    
+
+class EditReviewView(UpdateView):
+    model = Reviews
+    form_class = ReviewForm
+    success_url = reverse_lazy('reviews:my_reviews')
+    template_name = 'reviews/edit_review.html'
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактирование отзыва'
+        context['comment'] = self.object.comment
+        return context
+    
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user:
+            return self.form_invalid()
+        return super().form_valid(form)

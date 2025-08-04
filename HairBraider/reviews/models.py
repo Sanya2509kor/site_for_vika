@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import models
 from django.conf import settings  # Для ссылки на модель User
 
@@ -20,3 +21,8 @@ class Reviews(models.Model):
 
     def __str__(self):
         return f"Отзыв {self.id} от {self.user.username}"
+    
+
+    @property
+    def expiry_date(self):
+        return self.created_at + timedelta(days=1)
