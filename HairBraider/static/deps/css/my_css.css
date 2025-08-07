@@ -9,7 +9,7 @@
 body {
     background-image: url("../images/bg-image.jpg");
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--secondary-color);
+    /* background-color: var(--secondary-color); */
     color: var(--dark-color);
 }
 

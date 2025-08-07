@@ -12,10 +12,10 @@
     <div class="row justify-content-center">
         <div class="col-md-6 registration-form p-4 mb-4 mx-3 rounded custom-shadow">
             <h2 class="text-center mb-4">Авторизация</h2>
-            <form action="{% url 'user:login' %}" method="post">
+            <form action="{% url 'user:login' %}" method="post" id="login_form">
                 {% csrf_token %}
                 
-                {% if request.GET.next %}
+                {% if request.GET and 'next' in request.GET %}
                     <input type="hidden" name="next" value="{{ request.GET.next }}">
                 {% endif %}
                 
@@ -34,10 +34,12 @@
                     <input type="text" 
                            class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
                            id="id_phone_number"
-                           value="{{ form.username.value|default_if_none:'' }}"  
+                           value="{{ form.username.value|default_if_none:'+7' }}"  
                            name="username"
                            placeholder="+7(000)000-0000" 
-                           required>
+                           required
+                           maxlength="12">
+                    <div id="phone_number_error" class="alert alert-danger mt-2 d-none"></div>
                     {% if form.username.errors %}
                         <div class="invalid-feedback">
                             {% for error in form.username.errors %}
@@ -64,12 +66,27 @@
                         </div>
                     {% endif %}
                 </div>
+                <div class="col-md-6 mb-3">
+                    <div 
+                    style="height: 50px"
+                    id="captcha-container"
+                    class="smart-captcha"
+                    data-sitekey="ysc1_jsQ0rk3kAUC3HVkh9j5PwHeHLiykKYa8pIi9EmIX448f6251"
+                    ></div>
+                </div>
                 
                 <button type="submit" class="btn btn-dark btn-block">Войти</button> 
             </form>
             
+            
             <div class="mt-3">
                 <a href="#">Забыли пароль?</a> | <a href="{% url 'user:registration' %}">Создать аккаунт</a>
+            </div>
+            <div class="text-center">
+                <h4> или </h4>
+                <div>
+                {% autoescape off %}{{ telegram_redirect }}{% endautoescape %} 
+                </div>
             </div>
         </div>
     </div>
@@ -86,7 +103,7 @@
         
         // Если номер начинается не с +7 или 7 или 8, добавляем +7
         if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
-            value = '+7' + value;
+            value = '+7';
         }
         
         // Форматируем номер: +7 999 198-72-64
@@ -104,7 +121,7 @@
     });
 
     // Валидация формы перед отправкой
-    $('#registration_form').on('submit', function(event) {
+    $('#login_form').on('submit', function(event) {
         // Проверка номера телефона
         var phoneNumber = $('#id_phone_number').val();
         
@@ -125,7 +142,7 @@
         }
         
         if (!regex.test(cleanedPhoneNumber)) {
-            $('#phone_number_error').text('Введите корректный номер телефона (например: +7 999 123-45-67)').show();
+            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').removeClass('d-none');   // Показываем ошибку
             event.preventDefault();
             return false;
         } else {

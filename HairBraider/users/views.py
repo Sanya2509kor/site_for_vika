@@ -6,9 +6,18 @@ from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+
+from users.models import User
 from .forms import ProfileForm, UserLoginForm, UserRegistrationForm
 from orders.models import Appointment
 from django.utils import timezone
+
+from users.telegram_login_widget import telegram_login_widget_redirect, bot_token
+from django_telegram_login.authentication import verify_telegram_authentication
+from django_telegram_login.errors import (
+    NotTelegramDataError, 
+    TelegramDataIsOutdatedError,
+)
 
 
 class UserLoginView(LoginView):
@@ -17,9 +26,13 @@ class UserLoginView(LoginView):
     form_class = UserLoginForm
     success_url = reverse_lazy('main:index')
 
+    
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Авторизация'
+        context['telegram_redirect'] = telegram_login_widget_redirect
         return context
     
     def get_success_url(self):
@@ -56,9 +69,54 @@ class UserRegistrationView(CreateView):
     success_url = reverse_lazy('users:profile')
 
 
+    def telegram_login(self, request):
+        try:
+            result = verify_telegram_authentication(bot_token=bot_token, request_data=request.GET)
+            
+            # Проверяем, есть ли пользователь с таким telegram_id
+            user, created = User.objects.get_or_create(
+                telegram_id=result['id'],
+                defaults={
+                    'username': result.get('username', f"tg_{result['id']}"),
+                    'first_name': result.get('first_name', ''),
+                    # 'last_name': result.get('last_name', ''),
+                    'telegram_username': result.get('username', ''),
+                    'telegram_photo_url': result.get('photo_url', ''),
+                    'phone_number': f"tg_{result['id']}",  # Уникальное значение для USERNAME_FIELD
+                    'password': 'telegram_auth',  # Пароль не используется при Telegram аутентификации
+                }
+            )
+            
+            # Если пользователь уже существует, обновляем данные
+            if not created:
+                user.telegram_username = result.get('username', '')
+                user.telegram_photo_url = result.get('photo_url', '')
+                user.first_name = result.get('first_name', '')
+                user.save()
+            
+            # Авторизуем пользователя
+            auth.login(request, user)
+            messages.success(request, f"Вы успешно вошли через Telegram!")
+            return HttpResponseRedirect(self.success_url)
+
+        except TelegramDataIsOutdatedError:
+            messages.error(request, 'Данные аутентификации устарели (более 1 дня)')
+            return HttpResponseRedirect(reverse('users:login'))
+
+        except NotTelegramDataError:
+            messages.error(request, 'Данные не связаны с Telegram!')
+            return HttpResponseRedirect(reverse('users:login'))
+
+    def get(self, request, *args, **kwargs):
+        if 'hash' in request.GET:
+            return self.telegram_login(request)
+        return super().get(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Регистрация'
+        context['telegram_redirect'] = telegram_login_widget_redirect
         return context
     
     def form_valid(self, form):
@@ -81,6 +139,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'users/profile.html'
     form_class = ProfileForm
     success_url = reverse_lazy('users:profile')
+
 
     def get_object(self, queryset=None):
         return self.request.user

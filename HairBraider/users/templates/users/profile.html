@@ -61,7 +61,7 @@
         <div class="col-12 col-md-8 col-lg-6 mt-4 mt-md-5">
             <div class="profile-form">
                 <h3 class="text-center mb-4 form-header">Профиль пользователя</h3>
-                <form action="{% url "users:profile" %}" method="post" enctype="multipart/form-data">
+                <form action="{% url "users:profile" %}" method="post" enctype="multipart/form-data" id="profile_form">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-12 mb-3 text-center">
@@ -106,15 +106,26 @@
 
                         <div class="col-md-12 mb-3">
                             <label for="id_username" class="form-label">Номер телефона*</label>
-                            <input type="text" class="form-control" id="id_username"
+                            <input type="text" class="form-control" id="id_phone_number"
                                 name="phone_number"
-                                {% comment %} placeholder="{{form.phone_number.value}}"  {% endcomment %}
-                                value="{{form.phone_number.value}}" 
-                                readonly
-                                style="background-color: #f8f9fa; cursor: not-allowed;">
-                                <small class="form-text text-muted">
-                                    Номер телефона нельзя изменить после регистрации. Для изменения обратитесь в поддержку.
-                                </small>
+                                maxlength="12"
+                                placeholder="+79123456789" 
+                                value="{{form.phone_number.value}}"
+                                {% if not form.phone_number.value|slice:":3" == 'tg_' %}
+                                    readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"       
+                                {% endif %}
+                            >
+                                {% if form.phone_number.value|slice:":3" == 'tg_' %}
+                                    <small class="form-text text-muted">
+                                        Измените на свой номер телефона
+                                    </small>
+                                {% else %}
+                                    <small class="form-text text-muted">
+                                        Номер телефона нельзя изменить после регистрации. Для изменения обратитесь в поддержку.
+                                    </small>
+                                {% endif %}
+                                <div id="phone_number_error" class="alert alert-danger mt-2 d-none"></div>
                                 {% if form.phone_number.errors %}
                                     <div class="alert alert-danger alert-dismissible fade show">{{ form.phone_number.errors }}</div>
                                 {% endif %}
@@ -148,4 +159,70 @@
         </div>
     </div>
 </div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+    // Форматирование ввода номера телефона в реальном времени
+    $('#id_phone_number').on('input', function(e) {
+        // Удаляем все нецифровые символы, кроме возможного плюса в начале
+        var value = e.target.value.replace(/[^\d+]/g, '');
+        
+        // Если номер начинается не с +7 или 7 или 8, добавляем +7
+        if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+            value = '+7';
+        }
+        
+        // Форматируем номер: +7 999 198-72-64
+        var formatted = value
+            .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                let result = '+7';
+                if (p2) result += p2;
+                if (p3) result += p3;
+                if (p4) result += p4;
+                if (p5) result += p5;
+                return result;
+            });
+        
+        e.target.value = formatted;
+    });
+
+    // Валидация формы перед отправкой
+    $('#profile_form').on('submit', function(event) {
+        // Проверка номера телефона
+        var phoneNumber = $('#id_phone_number').val();
+        
+        // Регулярное выражение для российского номера:
+        // +7 или 7 или 8, затем 10 цифр
+        var regex = /^(\+7|7|8)\d{10}$/;
+        
+        // Очищаем номер для проверки (удаляем все, кроме цифр и +)
+        var cleanedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+        
+        // Если номер начинается с 8, заменяем на +7
+        if (cleanedPhoneNumber.startsWith('8')) {
+            cleanedPhoneNumber = '+7' + cleanedPhoneNumber.substring(1);
+        }
+        // Если номер начинается с 7 (без +), добавляем +
+        else if (cleanedPhoneNumber.startsWith('7') && !cleanedPhoneNumber.startsWith('+7')) {
+            cleanedPhoneNumber = '+' + cleanedPhoneNumber;
+        }
+        
+        if (!regex.test(cleanedPhoneNumber)) {
+            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').removeClass('d-none'); // Показываем ошибку
+            event.preventDefault();
+            return false;
+        } else {
+            $('#phone_number_error').hide();
+            
+            // Сохраняем очищенный номер в формате +79991234567
+            $('#id_phone_number').val(cleanedPhoneNumber);
+        }
+        
+        return true;
+    });
+});
+</script>
 {% endblock %}

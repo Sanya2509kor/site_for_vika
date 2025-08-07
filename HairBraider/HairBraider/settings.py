@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     'orders',
     'reviews',
     'about',
+
+    # telegram
+    'django_telegram_login',
+    # для авторизации через телеграм
+    'corsheaders',
     
 ]
 
@@ -54,7 +59,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # для авторизации через телеграм
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+# для авторизации через телеграм
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 ROOT_URLCONF = 'HairBraider.urls'
 
@@ -149,4 +160,19 @@ LOGOUT_REDIRECT_URL = 'main:index'  # URL после выхода
 DATE_INPUT_FORMATS = ['%d.%m.%Y', '%Y-%m-%d']
 TIME_INPUT_FORMATS = ['%H:%M', '%I:%M %p']
 
-TELEGRAM_BOT_TOKEN = '8098005907:AAFPpRMQ1PJ5EZmgq-yLLdope0hvEULwKv8'
+
+# Telegram settings
+TELEGRAM_BOT_NAME = 'HairBraiderbot'  # Имя вашего бота без @
+TELEGRAM_BOT_TOKEN = "7993455435:AAGO0f39bPs9v_Wpgqb4kzBAXAfC0lo1gic"
+        
+TELEGRAM_LOGIN_REDIRECT_URL = 'https://adequately-opportune-surfbird.cloudpub.ru/user/registration/'  # Куда перенаправлять после успешного входа
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://adequately-opportune-surfbird.cloudpub.ru',
+    # Другие доверенные источники
+]
+
+
+YANDEX_CAPTCHA_PUBLIC_KEY = 'ysc1_jsQ0rk3kAUC3HVkh9j5PwHeHLiykKYa8pIi9EmIX448f6251'
+YANDEX_CAPTCHA_PRIVATE_KEY = 'ysc2_jsQ0rk3kAUC3HVkh9j5PCe9gqzLaVunauUT0VGzF14ee453a'

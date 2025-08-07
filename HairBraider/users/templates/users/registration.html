@@ -40,8 +40,9 @@
                             <label for="id_phone_number" class="form-label">Номер телефона*:</label>
                             <input type="text" class="form-control" id="id_phone_number" 
                                 name="phone_number"
-                                value="{{ form.phone_number.value|default_if_none:'' }}"
-                                placeholder="(000)000-0000" required>
+                                value="{{ form.phone_number.value|default_if_none:'+7' }}"
+                                placeholder="(000)000-0000" required
+                                maxlength="12">
                             {% if form.phone_number.errors %}
                                 <div class="alert alert-danger alert-dismissible fade show">{{ form.phone_number.errors }}</div>
                             {% endif %}
@@ -70,10 +71,24 @@
                                 <div class="alert alert-danger alert-dismissible fade show">{{ form.password2.errors }}</div>
                             {% endif %}
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <div 
+                            style="height: 50px"
+                            id="captcha-container"
+                            class="smart-captcha"
+                            data-sitekey="ysc1_jsQ0rk3kAUC3HVkh9j5PwHeHLiykKYa8pIi9EmIX448f6251"
+                            ></div>
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-dark btn-block">Зарегистрироваться</button>
                 </form>
+                <div class="text-center">
+                <h4> или </h4>
+                <div>
+                {% autoescape off %}{{ telegram_redirect }}{% endautoescape %} 
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -89,17 +104,17 @@
         
         // Если номер начинается не с +7 или 7 или 8, добавляем +7
         if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
-            value = '+7' + value;
+            value = '+7';
         }
         
         // Форматируем номер: +7 999 198-72-64
         var formatted = value
             .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
                 let result = '+7';
-                if (p2) result += ' ' + p2;
-                if (p3) result += ' ' + p3;
-                if (p4) result += '-' + p4;
-                if (p5) result += '-' + p5;
+                if (p2) result += p2;
+                if (p3) result += p3;
+                if (p4) result += p4;
+                if (p5) result += p5;
                 return result;
             });
         
@@ -128,7 +143,7 @@
         }
         
         if (!regex.test(cleanedPhoneNumber)) {
-            $('#phone_number_error').text('Введите корректный номер телефона (например: +7 999 123-45-67)').show();
+            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').show();
             event.preventDefault();
             return false;
         } else {
