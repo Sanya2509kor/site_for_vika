@@ -1,6 +1,8 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+
+from main.models import Color
 from .forms import AppointmentForm
 from .models import AvailableTime, Appointment
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -32,12 +34,17 @@ class AppointmentView(LoginRequiredMixin, CreateView):
 
         if hasattr(self.request.user, 'phone_number') and self.request.user.phone_number:
             initial['phone'] = self.request.user.phone_number
+
+        colors = self.request.GET.getlist('colors', [])
+        if colors:
+            initial['colors'] = Color.objects.filter(id__in=colors)
         return initial
-    
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Запись'
+        context['colors'] = Color.objects.all()
         make_appoint = True
         if self.request.user.is_authenticated:
             if Appointment.objects.filter(user=self.request.user, date__date__gte=timezone.now().date()).count() >= 3:
@@ -65,6 +72,7 @@ class AppointmentView(LoginRequiredMixin, CreateView):
                 self.object = form.save(commit=False)
                 self.object.time = locked_time_slot
                 self.object.save()
+                form.save_m2m()
 
                 # Если пользователь авторизован
                 if self.request.user.is_authenticated:
@@ -76,16 +84,16 @@ class AppointmentView(LoginRequiredMixin, CreateView):
                     user.save()
                 
                     # Получаем номер телефона из формы
-                    phone_number = form.cleaned_data.get('phone')
+                    # phone_number = form.cleaned_data.get('phone')
                 
-                    # Если номер телефона был указан и отличается от текущего
-                    if (phone_number and 
-                        hasattr(self.request.user, 'phone_number') and 
-                        self.request.user.phone_number != phone_number):
+                    # # Если номер телефона был указан и отличается от текущего
+                    # if (phone_number and 
+                    #     hasattr(self.request.user, 'phone_number') and 
+                    #     self.request.user.phone_number != phone_number):
                     
-                        # Обновляем номер телефона пользователя
-                        self.request.user.phone_number = phone_number
-                        self.request.user.save()
+                    #     # Обновляем номер телефона пользователя
+                    #     self.request.user.phone_number = phone_number
+                    #     self.request.user.save()
                 
                 # Обновляем статус времени
                 locked_time_slot.freely = False

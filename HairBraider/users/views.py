@@ -139,12 +139,24 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'users/profile.html'
     form_class = ProfileForm
     success_url = reverse_lazy('users:profile')
+    current_name = None
+    current_username = None
 
 
     def get_object(self, queryset=None):
+        self.current_name = self.request.user.first_name
+        self.current_username = self.request.user.username
         return self.request.user
     
     def form_valid(self, form):
+        new_name = form.cleaned_data.get('first_name')
+        new_username = form.cleaned_data.get('username')
+        if self.current_name != new_name:
+            self.request.user.edit_name = False
+            self.request.user.save()
+        if self.current_username != new_username:
+            self.request.user.edit_username = False
+            self.request.user.save()
         messages.success(self.request, "Данные успешно обновлены")
         return super().form_valid(form)
     
@@ -159,9 +171,9 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         if self.request.user.is_authenticated:
             user_app = Appointment.objects.filter(user=self.request.user)
             today = timezone.now().date()
-            context['current_app'] = user_app.filter(date__date=today)
-            context['past_app'] = user_app.filter(date__date__lt=today)
-            context['future_app'] = user_app.filter(date__date__gt=today)
+            context['current_app'] = user_app.filter(date__date=today).order_by('-date', 'time')
+            context['past_app'] = user_app.filter(date__date__lt=today).order_by('-date', 'time')
+            context['future_app'] = user_app.filter(date__date__gt=today).order_by('-date', 'time')
 
         # context['orders'] = Order.objects.filter(user=self.request.user).prefetch_related(
                 # Prefetch(

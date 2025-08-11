@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from main.models import Products
+from main.models import Color, Product
 
 
 class AvailableDate(models.Model):
@@ -34,7 +34,8 @@ class Appointment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь',null=True, blank=True, related_name='appointment')
     name = models.CharField('Имя', max_length=100)
     phone = models.CharField('Телефон', max_length=20)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name='Услуга')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Услуга')
+    colors = models.ManyToManyField(Color, verbose_name='Выбранные цвета', blank=True)
     date = models.ForeignKey(AvailableDate, on_delete=models.CASCADE, verbose_name='Дата')
     time = models.ForeignKey(AvailableTime, on_delete=models.CASCADE, verbose_name='Время')
     comment = models.TextField(verbose_name='Комментарий', blank=True)

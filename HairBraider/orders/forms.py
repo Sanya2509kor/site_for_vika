@@ -1,4 +1,5 @@
 from django import forms
+from main.models import Color
 from .models import AvailableDate, AvailableTime, Appointment
 from django.db.models import Exists, OuterRef
 from django.utils import timezone
@@ -6,6 +7,12 @@ import pytz  # Импортируем pytz для работы с часовым
 
 
 class AppointmentForm(forms.ModelForm):
+    colors = forms.ModelMultipleChoiceField(
+        queryset=Color.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False  # Если выбор цвета не обязателен
+    )
+    
     date = forms.ModelChoiceField(
         queryset=AvailableDate.objects.annotate(
             has_available_times=Exists(
@@ -33,7 +40,7 @@ class AppointmentForm(forms.ModelForm):
     
     class Meta:
         model = Appointment
-        fields = ['date', 'time', 'name', 'phone', 'product', 'comment']
+        fields = ['date', 'time', 'name', 'phone', 'product', 'colors', 'comment']
     
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

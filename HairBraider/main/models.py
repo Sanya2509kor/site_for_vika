@@ -2,9 +2,21 @@ from django.db import models
 from django.urls import reverse
 
 
+class Color(models.Model):  # Изменил название на единственное число (более правильное соглашение)
+    name = models.CharField(max_length=30, verbose_name='Название цвета')
+    image = models.ImageField(upload_to='color_images/', verbose_name='Изображение цвета', blank=True, null=True)
+
+    class Meta:
+        db_table = 'main_color'
+        verbose_name = 'Цвет'
+        verbose_name_plural = 'Цвета'
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
 
 
-class Products(models.Model):
+class Product(models.Model):
 
 
     name = models.CharField(max_length=150, verbose_name='Название', blank=False, null=False)
@@ -13,7 +25,7 @@ class Products(models.Model):
     description = models.TextField(verbose_name='Текст', blank=True, null=True)
     price = models.DecimalField(max_digits=7, decimal_places=0, verbose_name='Цена')
     discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
-    color = models.CharField(max_length=30, verbose_name="Цвет детали", blank=True, null=True)
+    available_colors = models.ManyToManyField(Color, verbose_name='Доступные цвета', related_name='products')
     show = models.BooleanField(verbose_name='Показать на сайте?', default=True)
     
 
@@ -31,7 +43,7 @@ class Products(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='images', verbose_name='Товар')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name='Товар')
     image = models.ImageField(upload_to='product_images/', verbose_name='Изображение')
     is_main = models.BooleanField(default=False, verbose_name='Основное изображение')
     
@@ -42,3 +54,7 @@ class ProductImage(models.Model):
     
     def __str__(self):
         return f"Изображение {self.id} для {self.product.name}"
+
+
+
+

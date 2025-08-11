@@ -87,7 +87,17 @@
                                 name="first_name"
                                 placeholder="Введите ваше имя" 
                                 value="{{form.first_name.value}}"
-                                required>
+                                required
+                                {% if not user.edit_name %}
+                                    readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"
+                                {% endif %}
+                                >
+                                {% if not user.edit_name %}
+                                    <small class="form-text text-muted">
+                                        Имя нельзя изменить. Для изменения обратитесь в поддержку.
+                                    </small>
+                                {% endif %}
                                 {% if form.first_name.errors %}
                                     <div class="alert alert-danger alert-dismissible fade show">{{ form.first_name.errors }}</div>
                                 {% endif %}
@@ -98,7 +108,17 @@
                                 name="username"
                                 placeholder="Введите ваше имя пользователя" 
                                 value="{{form.username.value}}" 
-                                required>
+                                required
+                                {% if not user.edit_username %}
+                                    readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"
+                                {% endif %}
+                                >
+                                {% if not user.edit_username %}
+                                    <small class="form-text text-muted">
+                                        Имя пользователя нельзя изменить. Для изменения обратитесь в поддержку.
+                                    </small>
+                                {% endif %}
                                 {% if form.username.errors %}
                                     <div class="alert alert-danger alert-dismissible fade show">{{ form.username.errors }}</div>
                                 {% endif %}
