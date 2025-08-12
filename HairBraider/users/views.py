@@ -96,6 +96,7 @@ class UserRegistrationView(CreateView):
                 user = User(
                     telegram_id=telegram_id,
                     username=username,
+                    email='',
                     first_name=result.get('first_name', ''),
                     telegram_username=result.get('username'),
                     telegram_photo_url=result.get('photo_url'),

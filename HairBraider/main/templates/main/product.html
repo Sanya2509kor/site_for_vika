@@ -22,6 +22,7 @@
                      onclick="changeImage({{ forloop.counter }})" alt="{{ image.description|default:product.name }}">
             {% endfor %}
         </div>
+        {% if product.available_colors.all %}
         <div class="color-selector">
             <h5>Доступные цвета (можно выбрать несколько):</h5>
             <form method="post" id="colorForm">
@@ -41,6 +42,7 @@
                 <input type="hidden" name="product_id" value="{{ product.id }}">
             </form>
         </div>
+        {% endif %}
     </div>
 
 <section id="services" class="py-5">
@@ -221,10 +223,6 @@ document.getElementById('appointmentLink').addEventListener('click', function(e)
     const selectedColors = Array.from(document.querySelectorAll('.color-checkbox:checked'))
                               .map(checkbox => checkbox.value);
     
-    if (selectedColors.length === 0) {
-        alert('Пожалуйста, выберите хотя бы один цвет');
-        return;
-    }
     
     // Формируем URL с GET-параметрами
     const baseUrl = "{% url 'order:appointment' %}";

@@ -25,7 +25,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name='Текст', blank=True, null=True)
     price = models.DecimalField(max_digits=7, decimal_places=0, verbose_name='Цена')
     discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
-    available_colors = models.ManyToManyField(Color, verbose_name='Доступные цвета', related_name='products')
+    available_colors = models.ManyToManyField(Color, verbose_name='Доступные цвета', related_name='products', null=True, blank=True)
     show = models.BooleanField(verbose_name='Показать на сайте?', default=True)
     
 

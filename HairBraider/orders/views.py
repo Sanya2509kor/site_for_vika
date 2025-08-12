@@ -47,7 +47,7 @@ class AppointmentView(LoginRequiredMixin, CreateView):
         context['colors'] = Color.objects.all()
         make_appoint = True
         if self.request.user.is_authenticated:
-            if Appointment.objects.filter(user=self.request.user, date__date__gte=timezone.now().date()).count() >= 3:
+            if Appointment.objects.filter(user=self.request.user, date__date__gte=timezone.now().date()).count() >= 3 and not self.request.user.is_superuser:
                 messages.warning(self.request, 'У вас уже есть 3 записи, вы пока не можете записаться!!!')
                 make_appoint = False
         context['make_appoint'] = make_appoint
