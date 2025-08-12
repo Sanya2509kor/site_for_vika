@@ -73,36 +73,46 @@ class UserRegistrationView(CreateView):
         try:
             result = verify_telegram_authentication(bot_token=bot_token, request_data=request.GET)
             
-            # Проверяем, есть ли пользователь с таким telegram_id
-            user, created = User.objects.get_or_create(
-                telegram_id=result['id'],
-                defaults={
-                    'username': result.get('username', f"tg_{result['id']}"),
-                    'first_name': result.get('first_name', ''),
-                    # 'last_name': result.get('last_name', ''),
-                    'telegram_username': result.get('username', ''),
-                    'telegram_photo_url': result.get('photo_url', ''),
-                    'phone_number': f"tg_{result['id']}",  # Уникальное значение для USERNAME_FIELD
-                    'password': 'telegram_auth',  # Пароль не используется при Telegram аутентификации
-                }
-            )
+            # Генерируем уникальные значения
+            telegram_id = result['id']
+            username = result.get('username') or f"tg_{telegram_id}"
+            phone_number = f"tg_{telegram_id}"
             
-            # Если пользователь уже существует, обновляем данные
-            if not created:
-                user.telegram_username = result.get('username', '')
-                user.telegram_photo_url = result.get('photo_url', '')
+            # Пытаемся найти пользователя по telegram_id
+            user = User.objects.filter(telegram_id=telegram_id).first()
+            
+            if user:
+                # Обновляем существующего пользователя
+                user.telegram_username = result.get('username')
+                user.telegram_photo_url = result.get('photo_url')
                 user.first_name = result.get('first_name', '')
+                if not user.phone_number:
+                    user.phone_number = phone_number
+                if not user.username:
+                    user.username = username
+                user.save()
+            else:
+                # Создаем нового пользователя
+                user = User(
+                    telegram_id=telegram_id,
+                    username=username,
+                    first_name=result.get('first_name', ''),
+                    telegram_username=result.get('username'),
+                    telegram_photo_url=result.get('photo_url'),
+                    phone_number=phone_number,
+                    password='telegram_auth',  # Пароль не используется
+                )
+                user.set_unusable_password()  # Более корректный способ для OAuth
                 user.save()
             
-            # Авторизуем пользователя
             auth.login(request, user)
             messages.success(request, f"Вы успешно вошли через Telegram!")
             return HttpResponseRedirect(self.success_url)
-
+        
         except TelegramDataIsOutdatedError:
             messages.error(request, 'Данные аутентификации устарели (более 1 дня)')
             return HttpResponseRedirect(reverse('users:login'))
-
+        
         except NotTelegramDataError:
             messages.error(request, 'Данные не связаны с Telegram!')
             return HttpResponseRedirect(reverse('users:login'))

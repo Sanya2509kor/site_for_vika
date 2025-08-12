@@ -101,11 +101,14 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'cr96562_HB',
-#         'USER': 'cr96562_HB',
+#         'NAME': 'cr96562_vika',
+#         'USER': 'cr96562_vika',
 #         'PASSWORD': '89526136205Sa',
 #         'HOST': '127.0.0.1',
 #         'PORT': 3306,
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
 #     }
 # }
 
@@ -177,12 +180,17 @@ TIME_INPUT_FORMATS = ['%H:%M', '%I:%M %p']
 TELEGRAM_BOT_NAME = 'HairBraiderbot'  # Имя вашего бота без @
 TELEGRAM_BOT_TOKEN = "7993455435:AAGO0f39bPs9v_Wpgqb4kzBAXAfC0lo1gic"
         
-TELEGRAM_LOGIN_REDIRECT_URL = 'https://adequately-opportune-surfbird.cloudpub.ru/user/registration/'  # Куда перенаправлять после успешного входа
+TELEGRAM_LOGIN_REDIRECT_URL = 'https://cr96562-django-o71e1.tw1.ru/user/registration/'  # Куда перенаправлять после успешного входа
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://adequately-opportune-surfbird.cloudpub.ru',
+    'https://cr96562-django-o71e1.tw1.ru',
     # Другие доверенные источники
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://cr96562-django-o71e1.tw1.ru",
+    "https://your-other-domain.com",
 ]
 
 

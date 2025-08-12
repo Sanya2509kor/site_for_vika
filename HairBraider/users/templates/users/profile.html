@@ -131,14 +131,12 @@
                                 maxlength="12"
                                 placeholder="+79123456789" 
                                 value="{{form.phone_number.value}}"
-                                {% if not form.phone_number.value|slice:":3" == 'tg_' %}
-                                    readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"       
-                                {% endif %}
+                                readonly
+                                style="background-color: #f8f9fa; cursor: not-allowed;"       
                             >
                                 {% if form.phone_number.value|slice:":3" == 'tg_' %}
                                     <small class="form-text text-muted">
-                                        Измените на свой номер телефона
+                                        Нажмите на кнопку чтобы добавить номер телефона
                                     </small>
                                 {% else %}
                                     <small class="form-text text-muted">

@@ -19,7 +19,8 @@ class AvailableDateAdmin(admin.ModelAdmin):
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = ('date', 'time', 'name', 'phone', 'created_at', 'display_colors')
-    list_filter = ('date', 'created_at')
+    list_filter = ('date', 'created_at', 'name', 'phone')
+    search_fields = ('name', 'phone')
     filter_horizontal = ('colors',)
     readonly_fields = ('created_at', 'display_colors')
     

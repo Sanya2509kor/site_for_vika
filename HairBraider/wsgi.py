@@ -8,6 +8,6 @@ sys.path.insert(1, os.path.expanduser('~/HairBraider/public_html/'))
  
 from django.core.wsgi import get_wsgi_application
  
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HairBraider.settings')
  
 application = get_wsgi_application()
